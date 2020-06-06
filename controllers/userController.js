@@ -10,7 +10,7 @@ exports.getCurrentUser = catchAsync(async (req, res) => {
 exports.updateUser = catchAsync(async (req, res, next) => {
     const userBody = req.body;
     const verifiedUserData = {};
-    const allowedFields = ['name', 'password', 'current_password'];
+    const allowedFields = ['name', 'new_password', 'current_password'];
 
     Object.keys(userBody).map((field) => {
         if (allowedFields.includes(field))
@@ -30,7 +30,9 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     if (!isVerifiedPassword)
         return next(new AppError('wrong current password', 400));
 
-    user.changePassword(verifiedUserData.password);
+    if (verifiedUserData.new_password !== undefined)
+        user.changePassword(verifiedUserData.new_password);
+
     if (verifiedUserData.name) user.changeName(verifiedUserData.name);
 
     await user.save((err, success) => {

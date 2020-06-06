@@ -16,11 +16,6 @@ exports.login = catchAsync(async (req, res, next) => {
         if (!user) {
             return next(new AppError('Check your login and password', 400));
         } else {
-            const payload = {
-                name: user.name,
-                email: user.email,
-            };
-
             user.comparePassword(password, user.password).then((isEquals) => {
                 if (!isEquals) {
                     return next(
